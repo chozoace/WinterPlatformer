@@ -18,6 +18,8 @@ class PhysicsBody : public Component
 		void setXVelocity(float val) { velocity.x = val; }
 		void setYVelocity(float val) { velocity.y = val; }
 	protected:
+		float prevXPos;
+		float prevYPos;
 		float gravity;
 		float mass;
 		float maxFallSpeed;

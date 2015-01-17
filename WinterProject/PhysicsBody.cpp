@@ -6,10 +6,10 @@ PhysicsBody::PhysicsBody(GameObject* theObject)
 {
 	myObject = theObject;
 	mass = 1.0f;
-	gravity = 1200.0f;
-	maxFallSpeed = 1000.0f;
-	maxMoveSpeed = 300.0f;
-	jumpSpeed = 700.0f;
+	gravity = 6000.0f;
+	maxFallSpeed = 10000.0f;
+	maxMoveSpeed = 150.0f;
+	jumpSpeed = 1500.0f;
 	velocity.x = 0;
 	velocity.y = 0;
 	grounded = false;
@@ -31,7 +31,7 @@ void PhysicsBody::Update(float timeElapsed)
 	PlayerCollision *collisionComponent = myObject->GetComponent<PlayerCollision>();
 	bool xCollision = false;
 	
-	//Apply Force, should be done in update function
+	//Apply Force
 	velocity.y += (gravity * timeElapsed);
 	if (!xCollision)
 		myObject->setXPos(currentXPos += velocity.x * timeElapsed);
@@ -82,27 +82,41 @@ void PhysicsBody::Update(float timeElapsed)
 					velocity.y = 0;
 				}
 			}
-
+			//printf("XPos: %d\n", (int)myObject->getXPos());
 			//SLOPE COLLISION
 			if(collisionComponent->CheckCollision(collisionComponent->bottomLeftPoint(), true) && collisionComponent->getCollidingWall()->IsSlope())
 			{
 				//if colliding with a slope, readjust y position
 				//FIX THE FOLLOWING:
-				//Gravity is too strong, after a while, I fall through slopes, this is because gravity is constantly increasing until a limit
 				//I slip between slopes
+				//Temporarily fixed by placing "slopehelp blocks under each slope which always move me up
+				//player jitters up and down when going down slope
 				Wall *theWall = collisionComponent->getCollidingWall();
 				int xDistance = (int)myObject->getXPos() - ((int)theWall->getXPos() + (int)theWall->getWidth());
 				int resultY = (((int)theWall->getYPos() + theWall->getHeight()) + ((theWall->getSlopeHeight() / theWall->getSlopeWidth()) * xDistance));
-				printf("YPos: %d, ResultY: %d, xDistance: %d, WallY: %d\n", (int)collisionComponent->bottomLeftPoint().y, resultY, xDistance, (int)theWall->getYPos());
+				//printf("YPos: %d, ResultY: %d, xDistance: %d, WallY: %d, WallX: %d\n", (int)collisionComponent->bottomLeftPoint().y, resultY, xDistance, (int)theWall->getYPos(), (int)theWall->getXPos());
 				if (collisionComponent->bottomLeftPoint().y >= resultY)
 				{
-					printf("true\n");
 					myObject->setYPos(resultY - myObject->getHeight());
+					//gravity = 0;
+					velocity.y = 0;
+					//printf("new YPos: %d\n", (int)myObject->getYPos() + myObject->getHeight()-3);
 				}
+			}
+			else if (collisionComponent->CheckCollision(collisionComponent->bottomLeftPoint(), true) && collisionComponent->getCollidingWall()->IsSlopeHelp())
+			{
+				printf("slope help collide\n");
+				Wall *collidingWall = collisionComponent->getCollidingWall();
+				myObject->setYPos(collidingWall->getYPos() - myObject->getHeight() - 1);
+				velocity.y = 0;
 			}
 			else if (collisionComponent->CheckCollision(collisionComponent->bottomRightPoint(), true) && collisionComponent->getCollidingWall()->IsSlope())
 			{
 				//if colliding with a slope, readjust y position
+			}
+			else if (collisionComponent->CheckCollision(collisionComponent->bottomRightPoint(), true) && collisionComponent->getCollidingWall()->IsSlopeHelp())
+			{
+				
 			}
 		}
 
@@ -140,7 +154,7 @@ void PhysicsBody::Update(float timeElapsed)
 				myObject->setXPos(collisionComponent->getCollidingWall()->getXPos() + collisionComponent->getCollidingWall()->getWidth());
 				xCollision = true;
 			}
-			else if (collisionComponent->CheckCollision(collisionComponent->bottomLeftPoint(), false))
+			else if (collisionComponent->CheckCollision(collisionComponent->bottomLeftPoint(), false) && !collisionComponent->getCollidingWall()->IsSlopeHelp())
 			{
 				if ((myObject->getYPos() + myObject->getHeight()) > collisionComponent->getCollidingWall()->getYPos())
 				{

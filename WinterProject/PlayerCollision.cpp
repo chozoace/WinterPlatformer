@@ -36,7 +36,7 @@ bool PlayerCollision::CheckCollision(Vector2 collisionPoint, bool cornerPoint)
 				{
 					//if slope block, ignore collision
 					//find a way to check what "collisionPoint" is
-					if ((*iter)->getID() == 3)
+					if ((*iter)->getID() == 3 || (*iter)->getID() == 5)
 					{
 						if (cornerPoint)
 						{		

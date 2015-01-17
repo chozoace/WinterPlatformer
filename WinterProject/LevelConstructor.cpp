@@ -90,6 +90,11 @@ void LevelConstructor::tileLoad()
 					wallList.push_back(theWall);
 					GameController::Instance()->addToGameObjectList(theWall);
 					break;
+				case 5:
+					theWall = new Wall((float)destX, (float)destY, tileWidth, tileHeight, 5);
+					wallList.push_back(theWall);
+					GameController::Instance()->addToGameObjectList(theWall);
+					break;
 			}
 		}
 	}

@@ -14,12 +14,14 @@ class Wall : public GameObject
 		int getSlopeWidth(){ return slopeWidth; };
 		int getSlopeDirection() { return slopeDirection; };
 		bool IsSlope() { return isSlope; }
+		bool IsSlopeHelp() { return isSlopeHelp; }
 	private:
 		int imageId;
 		int slopeWidth = 0;
 		int slopeHeight = 0;
 		int slopeDirection = 0;
 		bool isSlope;
+		bool isSlopeHelp;
 };
 
 #endif WALL_H

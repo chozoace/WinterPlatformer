@@ -21,6 +21,7 @@ Wall::Wall(float xPos, float yPos, int theWidth, int theHeight, int id, string t
 			_v->setTexture(GameController::Instance()->loadTexture("Platform.png"));
 			objectName = "Wall";
 			isSlope = false;
+			isSlopeHelp = false;
 			break;
 		case 3: 
 			_v->setTexture(GameController::Instance()->loadTexture("45Slope.png"));
@@ -29,6 +30,7 @@ Wall::Wall(float xPos, float yPos, int theWidth, int theHeight, int id, string t
 			slopeHeight = 32;
 			slopeDirection = -1;
 			isSlope = true;
+			isSlopeHelp = false;
 			break;
 		case 4:
 			_v->setTexture(GameController::Instance()->loadTexture("45Slope2.png"));
@@ -37,7 +39,13 @@ Wall::Wall(float xPos, float yPos, int theWidth, int theHeight, int id, string t
 			slopeHeight = 32;
 			slopeDirection = 1;
 			isSlope = true;
+			isSlopeHelp = false;
 			break;
+		case 5:
+			_v->setTexture(GameController::Instance()->loadTexture("Platform.png"));
+			objectName = "Wall";
+			isSlope = false;
+			isSlopeHelp = true;
 	}
 	_t = new Tickable(this);
 	_c = new SolidObject(this);
