@@ -6,10 +6,10 @@ PhysicsBody::PhysicsBody(GameObject* theObject)
 {
 	myObject = theObject;
 	mass = 1.0f;
-	gravity = 6000.0f;
-	maxFallSpeed = 10000.0f;
+	gravity = 1200.0f;
+	maxFallSpeed = 5000.0f;
 	maxMoveSpeed = 150.0f;
-	jumpSpeed = 1500.0f;
+	jumpSpeed = 500.0f;
 	velocity.x = 0;
 	velocity.y = 0;
 	grounded = false;
@@ -107,16 +107,30 @@ void PhysicsBody::Update(float timeElapsed)
 			{
 				printf("slope help collide\n");
 				Wall *collidingWall = collisionComponent->getCollidingWall();
-				myObject->setYPos(collidingWall->getYPos() - myObject->getHeight() - 1);
+				myObject->setYPos(collidingWall->getYPos() - myObject->getHeight() - .5f);
 				velocity.y = 0;
 			}
 			else if (collisionComponent->CheckCollision(collisionComponent->bottomRightPoint(), true) && collisionComponent->getCollidingWall()->IsSlope())
 			{
 				//if colliding with a slope, readjust y position
+				Wall *theWall = collisionComponent->getCollidingWall();
+				int xDistance = (int)theWall->getXPos() - (myObject->getXPos() + myObject->getWidth());
+				int resultY = (((int)theWall->getYPos() + theWall->getHeight()) + ((theWall->getSlopeHeight() / theWall->getSlopeWidth()) * xDistance));
+				//printf("YPos: %d, ResultY: %d, xDistance: %d, WallY: %d, WallX: %d\n", (int)collisionComponent->bottomRightPoint().y, resultY, xDistance, (int)theWall->getYPos(), (int)theWall->getXPos());
+				if (collisionComponent->bottomRightPoint().y >= resultY)
+				{
+					myObject->setYPos(resultY - myObject->getHeight());
+					//gravity = 0;
+					velocity.y = 0;
+					//printf("new YPos: %d\n", (int)myObject->getYPos() + myObject->getHeight()-3);
+				}
 			}
 			else if (collisionComponent->CheckCollision(collisionComponent->bottomRightPoint(), true) && collisionComponent->getCollidingWall()->IsSlopeHelp())
 			{
-				
+				printf("slope help collide\n");
+				Wall *collidingWall = collisionComponent->getCollidingWall();
+				myObject->setYPos(collidingWall->getYPos() - myObject->getHeight() - .5f);
+				velocity.y = 0;
 			}
 		}
 
@@ -128,11 +142,12 @@ void PhysicsBody::Update(float timeElapsed)
 				myObject->setXPos(collisionComponent->getCollidingWall()->getXPos() - myObject->getWidth());
 				xCollision = true;
 			}
-			else if (collisionComponent->CheckCollision(collisionComponent->bottomRightPoint(), false))
+			else if (collisionComponent->CheckCollision(collisionComponent->bottomRightPoint(), false) && !collisionComponent->getCollidingWall()->IsSlopeHelp())
 			{
 				//printf("My Y: %f, Wall Y: %f\n", myObject->getYPos() + myObject->getHeight(), collisionComponent->getCollidingWall()->getYPos());
-				if ((myObject->getYPos() + myObject->getHeight()) > collisionComponent->getCollidingWall()->getYPos())
+				if ((myObject->getYPos() + myObject->getHeight()) > collisionComponent->getCollidingWall()->getYPos() && !collisionComponent->getCollidingWall()->IsSlope())
 				{
+					printf("right set\n");
 					myObject->setXPos(collisionComponent->getCollidingWall()->getXPos() - myObject->getWidth());
 					xCollision = true;
 				}
@@ -158,6 +173,7 @@ void PhysicsBody::Update(float timeElapsed)
 			{
 				if ((myObject->getYPos() + myObject->getHeight()) > collisionComponent->getCollidingWall()->getYPos())
 				{
+					printf("left set\n");
 					myObject->setXPos(collisionComponent->getCollidingWall()->getXPos() + collisionComponent->getCollidingWall()->getWidth());
 					xCollision = true;
 				}
