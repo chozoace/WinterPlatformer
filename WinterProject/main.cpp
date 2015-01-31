@@ -7,8 +7,14 @@
 #include <iostream>
 #include <sstream>
 
+using namespace std;
+
 int main(int argc, char* args[])
 {
+	int tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+	tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
+	_CrtSetDbgFlag(tmpDbgFlag); 
+
 	//main loop
 	bool running = true;
 	SDL_Event e;
@@ -41,6 +47,8 @@ int main(int argc, char* args[])
 
 	}
 	printf("out of while\n");
+	//int x;
+	//cin >> x;
 
 	return 0;
 }

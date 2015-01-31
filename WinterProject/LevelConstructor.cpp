@@ -109,6 +109,7 @@ int LevelConstructor::getTileAt(int x, int y)
 
 LevelConstructor::~LevelConstructor()
 {
+	printf("level constructor destructor\n");
 	instance = NULL;
 	delete[]gidArray;
 	while (!wallList.empty())
