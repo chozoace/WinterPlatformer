@@ -75,18 +75,19 @@ void GameController::CreatePlayerAt(int x, int y)
 
 GameController::~GameController()
 {
-	delete theBackground;
-	delete thePlatform;
-	delete player;
+	//delete theBackground;
+	//delete thePlatform;
+	//delete player;
 	delete levelConstructor;
 	playerControllerComponent = NULL;
 
 	while (!gameObjectList.empty())
 	{
-		gameObjectList.back() = NULL;
+		delete gameObjectList.back();
 		gameObjectList.pop_back();
 	}
 
+	printf("after while\n");
 	SDL_DestroyWindow(gWindow);
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyTexture(gTexture);

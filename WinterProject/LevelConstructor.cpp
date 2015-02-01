@@ -112,9 +112,9 @@ LevelConstructor::~LevelConstructor()
 	printf("level constructor destructor\n");
 	instance = NULL;
 	delete[]gidArray;
-	while (!wallList.empty())
-	{
-		wallList.back() = NULL;
-		wallList.pop_back();
-	}
+	//while (!wallList.empty())
+	//{
+		//wallList.back() = NULL;
+		//wallList.pop_back();
+	//}
 }
